@@ -2,6 +2,8 @@
 
 import sys
 from config_parser import parse_config, validate_config
+from maze import Maze
+from generator import generate
 
 
 def main() -> None:
@@ -15,9 +17,23 @@ def main() -> None:
     try:
         config = parse_config(config_path)
         validate_config(config)
-        print("Config loaded successfully:")
-        for key, value in config.items():
-            print(f" {key} = {value}")
+
+        # Build the maze configuration
+        width = int(config["WIDTH"])
+        height = int(config["HEIGHT"])
+        # Gets the seed from the config, if there is none,
+        # uses the seed = 42
+        seed = int(config.get("SEED", 42))
+        # Converts a string value into a comparison
+        # in order to create a boolean
+        perfect = config["PERFECT"] == "True"
+
+        maze = Maze(width, height)
+        generate(maze, seed, perfect)
+
+        print(f"Maze generated ({width}x{height}):")
+        maze.debug_print()
+
     except (FileNotFoundError, ValueError) as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
