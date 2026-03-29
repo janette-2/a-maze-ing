@@ -28,8 +28,8 @@ clean:
 	find . -name "*.pyc" -delete 2>/dev/null || true
 
 # Runs both code quality tools with the flags required by the subject.
-# flake8: checks code style and formatting (PEP8).
-# mypy: checks that declared types are correct.
+# flake8: checks code style and formatting
+# mypy: checks that declared types hints are correct.
 lint:
 	flake8 .
 	mypy . --warn-return-any --warn-unused-ignores \
