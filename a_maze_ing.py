@@ -4,6 +4,7 @@ import sys
 from config_parser import parse_config, validate_config
 from maze import Maze
 from generator import generate
+from pattern import embed_pattern
 
 
 def main() -> None:
@@ -29,7 +30,12 @@ def main() -> None:
         perfect = config["PERFECT"] == "True"
 
         maze = Maze(width, height)
-        generate(maze, seed, perfect)
+
+        # Places the '42' pattern before generating the paths of the maze
+        blocked = embed_pattern(maze)
+
+        # Generates the final paths
+        generate(maze, seed, perfect, blocked)
 
         print(f"Maze generated ({width}x{height}):")
         maze.debug_print()

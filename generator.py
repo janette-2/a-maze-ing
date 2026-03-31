@@ -3,7 +3,8 @@ import random
 from maze import Maze, NORTH, EAST, SOUTH, WEST, OPPOSITE, DELTA
 
 
-def generate(maze: Maze, seed: int, perfect: bool) -> None:
+def generate(maze: Maze, seed: int, perfect: bool,
+             blocked: set[tuple[int, int]] | None = None) -> None:
     """ Generates a maze using the Recursive Backtracker algorithm
 
     Starts from cell (0, 0) and carves passages using an iterative
@@ -13,7 +14,11 @@ def generate(maze: Maze, seed: int, perfect: bool) -> None:
         maze: The Maze object to generate, modified in place
         seed: Random seed for reproducibility
         perfect: If True, generates a perfect maze (one path between
-        any two cells). If False, adds extra passages.
+                 any two cells). If False, adds extra passages.
+        blocked : Set of (x, y) cells to skip during generation,
+                  reserved to place the '42' pattern. Accepts the
+                  set of tuples with the pattern or None, but as
+                  default is set to (= None)
     """
     rng = random.Random(seed)
 
@@ -21,6 +26,14 @@ def generate(maze: Maze, seed: int, perfect: bool) -> None:
     visited: list[list[bool]] = [
         [False] * maze.width for _ in range(maze.height)
     ]
+
+    # Checks if the pattern '42' doesn't fit
+    if blocked is None:
+        blocked = set()
+
+    # If it fits, keeps the cells for the '42' as visited:
+    for x, y in blocked:
+        visited[y][x] = True
 
     # Starts searching the path from the top-left corner
     start_x, start_y = 0, 0
