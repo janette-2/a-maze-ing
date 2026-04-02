@@ -1,6 +1,6 @@
 """ Maze validations """
 
-from maze import Maze, NORTH, EAST, SOUTH, WEST, OPPOSITE, DELTA
+from maze import Maze, NORTH, EAST, SOUTH, WEST, DELTA
 
 
 # ** exit_ is written like that to avoid conflicts between the variable
@@ -175,7 +175,7 @@ def _validate_connectivity(maze: Maze, entry: tuple[int, int],
     """ Check that all non-blocked cells are reachable from entry
 
     Uses BFS from the entry point to verify full connectivity
-   
+
     Args:
         maze: The Maze object to validate
         entry: Entry coordinates (x, y)

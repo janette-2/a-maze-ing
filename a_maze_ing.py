@@ -6,6 +6,8 @@ from maze import Maze
 from generator import generate
 from pattern import embed_pattern
 from validator import validate_maze
+from solver import solve
+from writer import write_output
 
 
 def main() -> None:
@@ -36,6 +38,8 @@ def main() -> None:
         entry = (entry_x, entry_y)
         exit_ = (exit_x, exit_y)
 
+        # Output file path configured
+        output_file = config["OUTPUT_FILE"]
         maze = Maze(width, height)
 
         # Places the '42' pattern before generating the paths of the maze
@@ -47,8 +51,18 @@ def main() -> None:
         # Validates the conditions of the maze
         validate_maze(maze, entry, exit_, blocked)
 
-        print(f"Maze generated and validated ({width}x{height}):")
-        maze.debug_print()
+        # Solve the shortest path
+        path = solve(maze, entry, exit_)
+        if not path:
+            print("Warning: no path found between entry and exit",
+                  file=sys.stderr)
+
+        # Write output in file
+        write_output(maze, entry, exit_, path, output_file)
+
+        print(f"Maze generated ({width}x{height}), "
+              f"path length: {len(path)} steps")
+        print(f"Output written to: {output_file}")
 
     except (FileNotFoundError, ValueError) as e:
         print(f"Error: {e}", file=sys.stderr)
