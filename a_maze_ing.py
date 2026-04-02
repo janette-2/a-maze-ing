@@ -5,6 +5,7 @@ from config_parser import parse_config, validate_config
 from maze import Maze
 from generator import generate
 from pattern import embed_pattern
+from validator import validate_maze
 
 
 def main() -> None:
@@ -29,6 +30,12 @@ def main() -> None:
         # in order to create a boolean
         perfect = config["PERFECT"] == "True"
 
+        # Coordinates of entry and exit
+        entry_x, entry_y = map(int, config["ENTRY"].split(','))
+        exit_x, exit_y = map(int, config["EXIT"].split(','))
+        entry = (entry_x, entry_y)
+        exit_ = (exit_x, exit_y)
+
         maze = Maze(width, height)
 
         # Places the '42' pattern before generating the paths of the maze
@@ -37,7 +44,10 @@ def main() -> None:
         # Generates the final paths
         generate(maze, seed, perfect, blocked)
 
-        print(f"Maze generated ({width}x{height}):")
+        # Validates the conditions of the maze
+        validate_maze(maze, entry, exit_, blocked)
+
+        print(f"Maze generated and validated ({width}x{height}):")
         maze.debug_print()
 
     except (FileNotFoundError, ValueError) as e:

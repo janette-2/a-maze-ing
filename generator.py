@@ -76,6 +76,9 @@ def generate(maze: Maze, seed: int, perfect: bool,
             # the last one because it has no unvisited options
             stack.pop()
 
+    # Ensure that all the border walls are closed
+    _close_borders(maze)
+
     # If the maze is not meant to only have a unique path between
     # two cells, if there can be alternatives to connect the
     # same cells (unperfect)
@@ -111,3 +114,20 @@ def _add_extra_passage(maze: Maze, rng: random.Random) -> None:
             # Opens a path vertically if 'False'
             maze.remove_wall(x, y, SOUTH)
             maze.remove_wall(x, y + 1, NORTH)
+
+
+def _close_borders(maze: Maze) -> None:
+    """ Ensure all external border walls are closed
+
+        Args:
+            maze: The Maze object to modify in place
+    """
+    # Top and bottom rows
+    for x in range(maze.width):
+        maze.add_wall(x, 0, NORTH)
+        maze.add_wall(x, maze.height - 1, SOUTH)
+
+    # Left and right columns
+    for y in range(maze.height):
+        maze.add_wall(0, y, WEST)
+        maze.add_wall(maze.width - 1, y, EAST)
