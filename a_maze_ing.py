@@ -8,6 +8,7 @@ from pattern import embed_pattern
 from validator import validate_maze
 from solver import solve
 from writer import write_output
+from renderer import render, path_to_cells
 
 
 def main() -> None:
@@ -60,9 +61,13 @@ def main() -> None:
         # Write output in file
         write_output(maze, entry, exit_, path, output_file)
 
-        print(f"Maze generated ({width}x{height}), "
-              f"path length: {len(path)} steps")
-        print(f"Output written to: {output_file}")
+        # Render and display
+        cells = path_to_cells(entry, path)
+        print(render(maze, entry, exit_, cells, blocked))
+
+        # print(f"Maze generated ({width}x{height}), "
+        #       f"path length: {len(path)} steps")
+        # print(f"Output written to: {output_file}")
 
     except (FileNotFoundError, ValueError) as e:
         print(f"Error: {e}", file=sys.stderr)
