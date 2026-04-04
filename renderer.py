@@ -1,5 +1,5 @@
 """ ASCII renderer for the visual representation of the maze"""
-from maze import Maze, NORTH, EAST, SOUTH, WEST
+from maze import Maze, NORTH, SOUTH, WEST
 
 # ANSI color code for terminal output
 COLORS: dict[str, str] = {
