@@ -8,7 +8,58 @@ from pattern import embed_pattern
 from validator import validate_maze
 from solver import solve
 from writer import write_output
-from renderer import render, path_to_cells
+from menu import show_menu
+
+
+def build_maze(config: dict[str, str]) -> tuple[
+    Maze, tuple[int, int], tuple[int, int], str,
+        set[tuple[int, int]]]:
+    """ Build, validate and solve a maze from config
+
+    Args:
+        config: Dictionary of configuration key-value pairs
+
+    Returns:
+        A tuple of (maze, entry, exit_, path, blocked)
+    """
+    # Build the maze configuration
+    width = int(config["WIDTH"])
+    height = int(config["HEIGHT"])
+    # Gets the seed from the config, if there is none,
+    # uses the seed = 42
+    seed = int(config.get("SEED", 42))
+    # Converts a string value into a comparison
+    # in order to create a boolean
+    perfect = config["PERFECT"] == "True"
+
+    # Coordinates of entry and exit
+    entry_x, entry_y = map(int, config["ENTRY"].split(','))
+    exit_x, exit_y = map(int, config["EXIT"].split(','))
+    entry = (entry_x, entry_y)
+    exit_ = (exit_x, exit_y)
+    # Output file path configured
+    output_file = config["OUTPUT_FILE"]
+    maze = Maze(width, height)
+
+    # Places the '42' pattern before generating the paths of the maze
+    blocked = embed_pattern(maze)
+
+    # Generates the final paths
+    generate(maze, seed, perfect, blocked)
+
+    # Validates the conditions of the maze
+    validate_maze(maze, entry, exit_, blocked)
+
+    # Solve the shortest path
+    path = solve(maze, entry, exit_)
+    if not path:
+        print("Warning: no path found between entry and exit",
+              file=sys.stderr)
+
+    # Write output in file
+    write_output(maze, entry, exit_, path, output_file)
+
+    return maze, entry, exit_, path, blocked
 
 
 def main() -> None:
@@ -23,53 +74,21 @@ def main() -> None:
         config = parse_config(config_path)
         validate_config(config)
 
-        # Build the maze configuration
-        width = int(config["WIDTH"])
-        height = int(config["HEIGHT"])
-        # Gets the seed from the config, if there is none,
+        maze, entry, exit_, path, blocked = build_maze(config)
         # uses the seed = 42
         seed = int(config.get("SEED", 42))
-        # Converts a string value into a comparison
-        # in order to create a boolean
-        perfect = config["PERFECT"] == "True"
 
-        # Coordinates of entry and exit
-        entry_x, entry_y = map(int, config["ENTRY"].split(','))
-        exit_x, exit_y = map(int, config["EXIT"].split(','))
-        entry = (entry_x, entry_y)
-        exit_ = (exit_x, exit_y)
+        while True:
+            action = show_menu(maze, entry, exit_, path, blocked)
 
-        # Output file path configured
-        output_file = config["OUTPUT_FILE"]
-        maze = Maze(width, height)
+            if action == "quit":
+                break
+            elif action == "regenerate":
+                seed += 1
+                config["SEED"] = str(seed)
+                maze, entry, exit_, path, blocked = build_maze(config)
 
-        # Places the '42' pattern before generating the paths of the maze
-        blocked = embed_pattern(maze)
-
-        # Generates the final paths
-        generate(maze, seed, perfect, blocked)
-
-        # Validates the conditions of the maze
-        validate_maze(maze, entry, exit_, blocked)
-
-        # Solve the shortest path
-        path = solve(maze, entry, exit_)
-        if not path:
-            print("Warning: no path found between entry and exit",
-                  file=sys.stderr)
-
-        # Write output in file
-        write_output(maze, entry, exit_, path, output_file)
-
-        # Render and display
-        cells = path_to_cells(entry, path)
-        print(render(maze, entry, exit_, cells, blocked))
-
-        # print(f"Maze generated ({width}x{height}), "
-        #       f"path length: {len(path)} steps")
-        # print(f"Output written to: {output_file}")
-
-    except (FileNotFoundError, ValueError) as e:
+    except (FileNotFoundError, ValueError, OSError) as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
 

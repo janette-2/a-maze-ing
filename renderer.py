@@ -9,7 +9,6 @@ COLORS: dict[str, str] = {
     "yellow": "\033[93m",
     "blue":   "\033[94m",
     "reset":  "\033[0m",
-    "bright_yellow": "\033[93;1m",  # negrita + amarillo = más neón
 }
 
 # Characters used to draw the maze
@@ -158,7 +157,7 @@ def render(maze: Maze, entry: tuple[int, int],
                 elif (x, y) == exit_:
                     c_line += red + EXIT_CHAR + reset
                 elif (x, y) in blocked:
-                    c_line += "\033[93;1m" + SOLID + reset
+                    c_line += "\033[93m" + SOLID + reset
                 elif show_path and (x, y) in path_cells:
                     c_line += blue + PATH + reset
                 else:

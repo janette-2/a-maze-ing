@@ -93,13 +93,13 @@ def _validate_borders(maze: Maze, entry: tuple[int, int],
                 raise ValueError(
                     f"Border error: North wall open at ({x}, 0)"
                 )
-            # If the south wall is open at the bottom...
-            if (x, maze.height - 1) not in special:
-                if not bool(maze.grid[maze.height - 1][x] & SOUTH):
-                    raise ValueError(
-                        f"Border error: South wall open at "
-                        f"({x}, {maze.height - 1})"
-                    )
+        # If the south wall is open at the bottom...
+        if (x, maze.height - 1) not in special:
+            if not bool(maze.grid[maze.height - 1][x] & SOUTH):
+                raise ValueError(
+                    f"Border error: South wall open at "
+                    f"({x}, {maze.height - 1})"
+                )
 
     # Checks the left and right borders of the maze
     for y in range(maze.height):
@@ -120,42 +120,42 @@ def _validate_borders(maze: Maze, entry: tuple[int, int],
 
 def _validate_no_large_open_areas(maze: Maze,
                                   blocked: set[tuple[int, int]]) -> None:
-    """ Check that no corridor is wider than 3 cells.
+    """Check that no 3x3 area is completely open.
 
-    A corridor wider than 2 cells means there is a strip of 3 or more
-    cells with no walls between them, either horizontally or vertically.
+    Corridors can't be wider than 2 cells in both dimensions
+    simultaneously. 2x3 or 3x2 areas are allowed, but never 3x3.
 
     Args:
-        maze: The Maze object to validate
-        blocked: Set of cells belonging to the 42 pattern
+        maze: The Maze object to validate.
+        blocked: Set of cells belonging to the 42 pattern.
 
     Raises:
-        ValueError: If an 3x3 area is found.
+        ValueError: If a 3x3 open area is found.
     """
-    # Goes through a 3 rows
     for y in range(maze.height - 2):
-        # Goes through 3 positions in columns
         for x in range(maze.width - 2):
-            cells_3x3 = [(x + dx, y + dy) for dx
-                         in range(3) for dy in range(3)]
-            # Skip and stores the cell if it belongs to the '42' pattern
-            if any(cell in blocked for cell in cells_3x3):
+            is_blocked = any((x + dx, y + dy) in blocked
+                             for dx in range(3) for dy in range(3))
+            if is_blocked:
                 continue
 
-            walls_missing = (
-                not maze.has_wall(x, y, EAST) and
-                not maze.has_wall(x+1, y, EAST) and
-                not maze.has_wall(x, y+1, EAST) and
-                not maze.has_wall(x+1, y+1, EAST) and
-                not maze.has_wall(x, y, SOUTH) and
-                not maze.has_wall(x+1, y, SOUTH) and
-                not maze.has_wall(x, y+1, SOUTH) and
-                not maze.has_wall(x+1, y+1, SOUTH)
-            )
+            open_area = True
+            for dy in range(3):
+                for dx in range(3):
+                    cx, cy = x + dx, y + dy
+                    if dx < 2 and bool(maze.grid[cy][cx] & EAST):
+                        open_area = False
+                        break
+                    if dy < 2 and bool(maze.grid[cy][cx] & SOUTH):
+                        open_area = False
+                        break
+                if not open_area:
+                    break
 
-            if walls_missing:
+            if open_area:
                 raise ValueError(
-                    f"3x3+ open area at ({x}, {y})")
+                    f"Large open area (3x3) detected at ({x}, {y})"
+                )
 
 
 def _validate_connectivity(maze: Maze, entry: tuple[int, int],
