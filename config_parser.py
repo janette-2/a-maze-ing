@@ -98,19 +98,30 @@ def validate_config(config: dict[str, str]) -> None:
         try:
             x_str, y_str = config[key].split(",")
             x, y = int(x_str.strip()), int(y_str.strip())
-            if not (0 <= x < width and 0 <= y < height):
-                raise ValueError(
-                    f"'{key}' coordinates ({x}, {y}) are outside "
-                    f"the maze bounds ({width}x{height})"
-                )
-        # Checks if the value is out of bounds or if it's
-        # (None: obj -> Attribute)
-        except (ValueError, AttributeError):
+
+        except (ValueError, AttributeError, KeyError):
             raise ValueError(
-                f"'{key}' must be a positive integer, got '{config[key]}'"
+                f"'{key}' must be a positive integer separated by a "
+                f"comma, got '{config[key]}'"
             )
 
-    # Validate ENTRY AND EXIT ade different
+    # Checks if the value is out of bounds or if it's
+    # (None: obj -> Attribute)
+        # if not (0 <= x < width and 0 <= y < height):
+        if x >= width or y >= height:
+            raise ValueError(
+                f"'{key}' coordinates ({x}, {y}) are outside "
+                f"the maze bounds ({width}x{height})"
+            )
+
+        # Checks if there are negative coordinates
+        if x < 0 or y < 0:
+            raise ValueError(
+                f"'{key}' must be a positive integer separated by a "
+                f"comma, got '{config[key]}'"
+            )
+
+    # Validate ENTRY AND EXIT are different
     if config["ENTRY"] == config["EXIT"]:
         raise ValueError("'ENTRY' and 'EXIT' must be different cells")
 

@@ -33,7 +33,10 @@ def generate(maze: Maze, seed: int, perfect: bool,
 
     # If it fits, keeps the cells for the '42' as visited:
     for x, y in blocked:
-        visited[y][x] = True
+        if maze.is_inside(x, y):
+            visited[y][x] = True
+        else:  # REVISAR SI ESTO SERÍA UNA EXCEPCIÓN
+            print(f"Warning: blocked cell ({x}, {y}) outside maze bounds")
 
     # Starts searching the path from the top-left corner
     start_x, start_y = 0, 0
@@ -54,7 +57,9 @@ def generate(maze: Maze, seed: int, perfect: bool,
         for direction in [NORTH, EAST, SOUTH, WEST]:
             dx, dy = DELTA[direction]
             nx, ny = x + dx, y + dy
-            if maze.is_inside(nx, ny) and not visited[ny][nx]:
+            if (maze.is_inside(nx, ny) and not visited[ny][nx]
+                    and not _would_create_forbidden_area(
+                        maze, x, y, direction, nx, ny)):
                 neighbours.append((nx, ny, direction))
 
         if neighbours:
@@ -84,6 +89,45 @@ def generate(maze: Maze, seed: int, perfect: bool,
     # same cells (unperfect)
     if not perfect:
         _add_extra_passage(maze, rng)
+
+
+def _would_create_forbidden_area(maze: Maze, x: int, y: int,
+                                 direction: int, nx: int, ny: int) -> bool:
+    """ Check if opening this wall would create a forbidden 3x3 area
+
+    """
+    perp1, perp2 = _get_perpendicular(direction)
+    dx1, dy1 = DELTA[perp1]
+    dx2, dy2 = DELTA[perp2]
+
+    # Parallel positions next to (x, y)
+    px1, py1 = x + dx1, y + dy1
+    px2, py2 = x + dx2, y + dy2
+
+    # Parallel positions next to (nx,ny)
+    qx1, qy1 = nx + dx1, ny + dy1
+    qx2, qy2 = nx + dx2, ny + dy2
+
+    parallel1_open = (
+        maze.is_inside(px1, py1) and maze.is_inside(qx1, qy1) and
+        not maze.has_wall(px1, py1, direction) and
+        not maze.has_wall(qx1, qy1, OPPOSITE[direction])
+    )
+
+    parallel2_open = (
+        maze.is_inside(px2, py2) and maze.is_inside(qx2, qy2) and
+        not maze.has_wall(px2, py2, direction) and
+        not maze.has_wall(qx2, qy2, OPPOSITE[direction])
+    )
+
+    return parallel1_open and parallel2_open
+
+
+def _get_perpendicular(direction: int) -> tuple[int, int]:
+    """Get the two perpendicular directions to given direction."""
+    if direction == NORTH or direction == SOUTH:
+        return EAST, WEST
+    return NORTH, SOUTH
 
 
 def _add_extra_passage(maze: Maze, rng: random.Random) -> None:
