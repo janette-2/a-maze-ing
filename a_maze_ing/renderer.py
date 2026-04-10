@@ -13,7 +13,7 @@ COLORS: dict[str, str] = {
 
 # Characters used to draw the maze
 SPACE = " "  # open corridor
-PATH = "░"  # path cell
+PATH = "█"  # path cell
 ENTRY_CHAR = "I"  # entry marker
 EXIT_CHAR = "O"  # exit marker
 SOLID = "█"  # solid cell (in the 42 pattern)

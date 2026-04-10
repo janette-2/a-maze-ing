@@ -6,6 +6,7 @@ from .pattern import embed_pattern
 from .solver import solve
 from .validator import validate_maze
 
+
 class MazeGenerator:
     """Reusable maze generator interface."""
 
