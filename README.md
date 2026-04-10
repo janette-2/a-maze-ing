@@ -86,14 +86,14 @@ git clone <repo_url>
 cd a-maze-ing
 
 python3 -m venv venv
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 1. Build and install the package
 ```
 python -m build
 cd dist
-pip uninstall mazegen    # desinstalar paquete viejo
+pip uninstall mazegen    # uninstall old packages
 pip install mazegen-1.0.0-py3-none-any.whl
 ```
 
