@@ -66,6 +66,7 @@ Where each KEY refers to:
 * **OUTPUT_FILE**: Output filename 
 * **PERFECT**:
     * True = generates a maze with a single solution
+
     * False =  generates a maze with multiple posible solutions
 * **SEED**: Integer for reproducible results
 
@@ -126,8 +127,39 @@ On one hand, *janrodri* handled the input/output algorithms, data validation, an
 At the beginning, a plan of approximately 7 days was established, where the work was organized into sequential parts. However, as the project progressed, it became necessary to work on tasks originally planned for later days in order to move forward, so the work assigned to the final days was completed throughout the rest of the project.
 
 ### Retrospective
-- What worked well: 
-- What could be improved: 
+
+**What worked well:**
+- Dividing the project into daily sessions made it easier to track progress
+  and stay focused on one task at a time.
+
+- Using GitHub from day one allowed both team members to stay in sync and
+  review each other's work through commits.
+
+- The choice of the Recursive Backtracker algorithm proved solid — it naturally
+  produces perfect mazes and was straightforward to adapt for the non-perfect
+  mode and the 42 pattern embedding.
+
+- Catching issues early (such as flake8 scanning .venv, or the border wall
+  coherence bug) by testing frequently prevented bigger problems later.
+
+- The modular structure of the project (separate files for config, maze,
+  generator, validator, solver, renderer, menu) made it easy to work on
+  each part independently.
+ 
+
+**What could be improved:**
+- The initial planning underestimated the complexity of some parts, particularly
+  the ASCII renderer and the Unicode box-drawing character alignment, which
+  required several iterations.
+
+- The .flake8 configuration file was not included in the initial setup, which
+  caused unexpected linting errors when first running make lint. Adding it from
+  the start would have saved time.
+
+- More unit tests would have made debugging faster, especially for the validator
+  and the renderer.
+
+- The visual representation of the solved path could have been more unified or improved visually
 
 ### Tools used
 - Python 3.10+
