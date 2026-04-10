@@ -35,8 +35,10 @@ def generate(maze: Maze, seed: int, perfect: bool,
     for x, y in blocked:
         if maze.is_inside(x, y):
             visited[y][x] = True
-        else:  # REVISAR SI ESTO SERÍA UNA EXCEPCIÓN
-            print(f"Warning: blocked cell ({x}, {y}) outside maze bounds")
+        else:
+            raise ValueError(
+                f"Warning: blocked cell ({x}, {y}) outside maze bounds"
+                )
 
     # Starts searching the path from the top-left corner
     start_x, start_y = 0, 0
