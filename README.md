@@ -33,7 +33,7 @@ make run
 ```
 - which is equivalent to running:
 ```
-python3 a_maze_ing/a_maze_ing.py config.txt
+python3 a_maze_ing.py config.txt
 ```
 - other useful commands:
 ```
