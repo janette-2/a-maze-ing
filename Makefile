@@ -9,12 +9,12 @@ install:
 
 # Runs the program with the default config file.
 run:
-	python3 a_maze_ing/a_maze_ing.py config.txt
+	python3 a_maze_ing.py config.txt
 
 # Opens Python's built-in interactive debugger (pdb).
 # Useful commands: n=next line, p var=print variable, q=quit.
 debug:
-	python3 -m pdb a_maze_ing/a_maze_ing.py config.txt
+	python3 -m pdb a_maze_ing.py config.txt
 
 # Removes all temporary files that Python generates automatically.
 # - find searches recursively from the current directory (.)
