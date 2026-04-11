@@ -18,7 +18,7 @@ This project consists of a maze generator developed in Python that, based on a c
 
 ```
 python3 -m venv venv
-source .venv/bin/activate
+source venv/bin/activate
 ```
 
 1. Install dependencies
