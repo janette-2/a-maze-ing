@@ -86,7 +86,7 @@ git clone <repo_url>
 cd a-maze-ing
 
 python3 -m venv venv
-source .venv/bin/activate
+source venv/bin/activate
 ```
 
 1. Build and install the package
