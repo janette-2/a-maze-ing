@@ -169,6 +169,28 @@ At the beginning, a plan of approximately 7 days was established, where the work
 - build (package building)
 - GitHub (repository hosting)
 
+
+
 ## Resources
-- Direct searches on Google about Python syntax (mostly answered automatically by Google’s AI)
-- Use of AI to organize the different workdays
+
+### References
+- [Python official documentation](https://docs.python.org/3/)
+- [Maze generation algorithms — Wikipedia](https://en.wikipedia.org/wiki/Maze_generation_algorithm)
+- [Recursive backtracker (DFS) explanation](https://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking)
+- [BFS pathfinding — Real Python](https://realpython.com/queue-in-python/)
+- [flake8 documentation](https://flake8.pycqa.org/)
+- [mypy documentation](https://mypy.readthedocs.io/)
+- [Python packaging guide (pyproject.toml + build)](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
+
+### AI usage
+AI tools (Claude by Anthropic) were used during this project as a learning aid
+and productivity tool, not as a code generator.
+
+Specifically, AI was used for:
+- **Planning**: structuring the project into daily sessions and deciding task order.
+- **Understanding concepts**: getting explanations of DFS, BFS, bitmasking, and
+  Python packaging before implementing them ourselves.
+- **Debugging support**: describing errors and getting suggestions on where to look.
+- **Documentation**: drafting and refining the README structure and docstrings,
+  which we reviewed and adapted to our actual code.
+
