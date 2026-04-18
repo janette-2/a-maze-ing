@@ -70,10 +70,50 @@ Where each KEY refers to:
     * False =  generates a maze with multiple posible solutions
 * **SEED**: Integer for reproducible results
 
-### Maze Algorithm
-The maze is generated using a Depth-First Search (DFS) algorithm, as it naturally produces perfect mazes, with a single path between any two cells, in a simple and efficient way.
 
-The shortest path is computed using Breadth-First Search (BFS), since it guarantees finding the minimum path in an unweighted grid.
+### Maze Algorithm
+
+#### Generation — Depth-First Search (Recursive Backtracker)
+
+The maze is generated using an iterative Depth-First Search (DFS) algorithm,
+also known as the Recursive Backtracker. The algorithm works as follows:
+
+1. Start at cell (0, 0) and mark it as visited.
+2. Look at the current cell's unvisited neighbours.
+3. If there are unvisited neighbours, pick one at random, remove the wall
+   between them, and move to that neighbour.
+4. If there are no unvisited neighbours, backtrack to the previous cell.
+5. Repeat until every cell has been visited.
+
+This algorithm was chosen because it naturally produces **perfect mazes** —
+mazes where there is exactly one path between any two cells, with no loops
+and no isolated cells. This is because DFS builds a spanning tree of the
+grid, which by definition connects all nodes without cycles.
+
+The implementation uses an explicit stack instead of recursion to avoid
+Python's recursion limit on large mazes. A random seed controls the
+neighbour selection at each step, making the generation fully reproducible.
+
+When `PERFECT=False`, extra passages are added after generation by randomly
+removing additional internal walls, creating loops and multiple paths between
+cells.
+
+#### Solving — Breadth-First Search
+
+The shortest path from entry to exit is computed using Breadth-First Search
+(BFS). The algorithm explores the maze level by level — first all cells at
+distance 1 from the entry, then distance 2, and so on — until it reaches
+the exit.
+
+BFS was chosen because it **guarantees the shortest path** in an unweighted
+grid. Unlike DFS, which would find a path but not necessarily the shortest
+one, BFS processes cells strictly in order of distance from the start. The
+first time it reaches the exit, it has found the optimal route.
+
+The result is a string of N/E/S/W letters describing each step of the
+shortest path, which is stored in the output file and can be displayed
+visually in the terminal renderer.
+
 
 ### Code Reusability (mazegen)
 The reusable part of the project is the **mazegen** package, which provides the **MazeGenerator class**. It encapsulates the core logic of maze generation and solving, allowing it to be imported and used independently from the main application.
@@ -183,8 +223,9 @@ At the beginning, a plan of approximately 7 days was established, where the work
 - [Python packaging guide (pyproject.toml + build)](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
 
 ### AI usage
-AI tools (Claude by Anthropic) were used during this project as a learning aid
-and productivity tool, not as a code generator.
+AI tools were used during this project as a learning aid
+and productivity tool, serving also as instructor and guide
+in problematic parts of the code.
 
 Specifically, AI was used for:
 - **Planning**: structuring the project into daily sessions and deciding task order.
